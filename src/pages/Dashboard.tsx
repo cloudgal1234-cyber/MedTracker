@@ -6,7 +6,7 @@ import { requestPermission } from '../services/notificationService';
 
 export function Dashboard() {
   const navigate = useNavigate();
-  const { medications, apiKey } = useMedicationStore();
+  const { medications } = useMedicationStore();
 
   useEffect(() => {
     requestPermission();
@@ -18,18 +18,6 @@ export function Dashboard() {
       <div style={{ background: '#fff', padding: '20px 20px 12px', boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
         <div style={{ fontSize: 24, fontWeight: 800 }}>💊 ארון התרופות</div>
         <div style={{ fontSize: 14, color: '#888', marginTop: 2 }}>{medications.length} תרופות</div>
-        {!apiKey && (
-          <div
-            onClick={() => navigate('/add')}
-            style={{
-              marginTop: 10, background: '#FFF3E0', border: '1px solid #FF9800',
-              borderRadius: 8, padding: '8px 12px', fontSize: 13, color: '#E65100',
-              cursor: 'pointer',
-            }}
-          >
-            ⚠️ לא הוגדר מפתח API — לחץ כאן להגדרה
-          </div>
-        )}
       </div>
 
       {/* List */}
