@@ -8,7 +8,7 @@ const REMINDER_OPTIONS = [7, 14, 30, 60];
 
 export function AddMedication() {
   const navigate = useNavigate();
-  const { addMedication, apiKey, setApiKey } = useMedicationStore();
+  const { addMedication } = useMedicationStore();
 
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [imageBase64, setImageBase64] = useState<string | null>(null);
@@ -18,7 +18,6 @@ export function AddMedication() {
   const [reminderDays, setReminderDays] = useState(14);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
-  const [localApiKey, setLocalApiKey] = useState(apiKey);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
@@ -34,10 +33,10 @@ export function AddMedication() {
       setExtracting(true);
       setError('');
       try {
-        const data = await extractMedicationData(base64, localApiKey);
+        const data = await extractMedicationData(base64);
         setExtracted(data);
       } catch {
-        setError('לא ניתן לנתח את התמונה. בדוק את מפתח ה-API.');
+        setError('לא ניתן לנתח את התמונה. נסה שוב.');
       } finally {
         setExtracting(false);
       }
@@ -48,7 +47,6 @@ export function AddMedication() {
   function handleSave() {
     if (!imageUri || !extracted) return;
     setSaving(true);
-    if (localApiKey !== apiKey) setApiKey(localApiKey);
     addMedication({
       name: extracted.name,
       purpose: extracted.purpose,
@@ -70,28 +68,8 @@ export function AddMedication() {
       </div>
 
       <div style={{ padding: 20 }}>
-        {/* API Key */}
-        <label style={labelStyle}>🔑 מפתח Gemini API</label>
-        <input
-          type="password"
-          placeholder="AIza..."
-          value={localApiKey}
-          onChange={(e) => setLocalApiKey(e.target.value)}
-          style={inputStyle}
-        />
-        {!localApiKey && (
-          <a
-            href="https://aistudio.google.com/app/apikey"
-            target="_blank"
-            rel="noreferrer"
-            style={{ fontSize: 13, color: '#2196F3', marginTop: 4, display: 'block' }}
-          >
-            📎 קבל מפתח חינם מ-Google AI Studio
-          </a>
-        )}
-
         {/* Camera / Gallery */}
-        <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
+        <div style={{ display: 'flex', gap: 10, marginBottom: 16 }}>
           <button onClick={() => cameraInputRef.current?.click()} style={primaryBtnStyle}>
             📷 צלם אריזה
           </button>
@@ -107,7 +85,7 @@ export function AddMedication() {
 
         {/* Preview */}
         {imageUri && (
-          <img src={imageUri} alt="preview" style={{ width: '100%', height: 200, objectFit: 'cover', borderRadius: 12, marginTop: 16 }} />
+          <img src={imageUri} alt="preview" style={{ width: '100%', height: 200, objectFit: 'cover', borderRadius: 12, marginBottom: 16 }} />
         )}
 
         {/* Loading */}
@@ -120,14 +98,14 @@ export function AddMedication() {
 
         {/* Error */}
         {error && (
-          <div style={{ background: '#FFEBEE', border: '1px solid #EF9A9A', borderRadius: 8, padding: 12, marginTop: 12, color: '#C62828', fontSize: 14 }}>
+          <div style={{ background: '#FFEBEE', border: '1px solid #EF9A9A', borderRadius: 8, padding: 12, marginBottom: 12, color: '#C62828', fontSize: 14 }}>
             ❌ {error}
           </div>
         )}
 
         {/* Extracted data */}
         {extracted && (
-          <div style={{ background: '#E8F5E9', border: '1px solid #A5D6A7', borderRadius: 12, padding: 16, marginTop: 16 }}>
+          <div style={{ background: '#E8F5E9', border: '1px solid #A5D6A7', borderRadius: 12, padding: 16, marginBottom: 16 }}>
             <div style={{ fontWeight: 700, color: '#2E7D32', marginBottom: 10 }}>✅ מידע שזוהה אוטומטית</div>
             {[
               { label: 'שם', value: extracted.name },
@@ -144,7 +122,7 @@ export function AddMedication() {
         )}
 
         {/* Storage location */}
-        <label style={{ ...labelStyle, marginTop: 20 }}>📍 מיקום אחסון בבית</label>
+        <label style={labelStyle}>📍 מיקום אחסון בבית</label>
         <input
           type="text"
           placeholder="לדוגמה: מגירה עליונה במטבח"
@@ -190,7 +168,7 @@ export function AddMedication() {
 }
 
 const labelStyle: React.CSSProperties = {
-  display: 'block', fontSize: 15, fontWeight: 600, color: '#333', marginBottom: 8,
+  display: 'block', fontSize: 15, fontWeight: 600, color: '#333', marginBottom: 8, marginTop: 16,
 };
 
 const inputStyle: React.CSSProperties = {
