@@ -1,0 +1,42 @@
+{
+  "expo": {
+    "name": "MedTracker",
+    "slug": "medtracker",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yourname.medtracker",
+      "infoPlist": {
+        "NSCameraUsageDescription": "נדרש כדי לצלם תמונות של אריזות תרופות",
+        "NSPhotoLibraryUsageDescription": "נדרש כדי לבחור תמונות מהגלריה"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.yourname.medtracker",
+      "permissions": ["CAMERA", "READ_EXTERNAL_STORAGE"]
+    },
+    "plugins": [
+      "expo-camera",
+      "expo-image-picker",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#2196F3"
+        }
+      ]
+    ]
+  }
+}
