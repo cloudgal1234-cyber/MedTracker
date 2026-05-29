@@ -1,30 +1,16 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+const SPECIAL = ['קירור', 'מקרר', 'קר', 'אור שמש', 'חושך', 'יבש', 'לח'];
 
-const SPECIAL_CONDITIONS = ['קירור', 'מקרר', 'קר', 'אור שמש', 'חושך', 'יבש', 'לח'];
-
-interface Props {
-  storageConditions: string;
-}
-
-export function StorageWarning({ storageConditions }: Props) {
-  const isSpecial = SPECIAL_CONDITIONS.some((kw) => storageConditions.includes(kw));
-  if (!isSpecial || storageConditions === 'לא זוהה') return null;
+export function StorageWarning({ conditions }: { conditions: string }) {
+  if (!SPECIAL.some((kw) => conditions.includes(kw)) || conditions === 'לא זוהה') return null;
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.icon}>⚠️</Text>
-      <Text style={styles.text}>{storageConditions}</Text>
-    </View>
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: 8,
+      background: '#FFF3E0', border: '1px solid #FF9800',
+      borderRadius: 8, padding: '8px 12px', marginTop: 8,
+    }}>
+      <span>⚠️</span>
+      <span style={{ color: '#E65100', fontSize: 13, fontWeight: 600 }}>{conditions}</span>
+    </div>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row', alignItems: 'center',
-    backgroundColor: '#FFF3E0', borderColor: '#FF9800',
-    borderWidth: 1, borderRadius: 8, padding: 8, marginTop: 6,
-  },
-  icon: { fontSize: 16, marginRight: 6 },
-  text: { color: '#E65100', fontSize: 13, fontWeight: '600', flex: 1 },
-});

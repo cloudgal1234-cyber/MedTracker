@@ -8,7 +8,6 @@ export interface Medication {
   storageLocation: string;
   imageUri: string;
   reminderDaysBefore: number;
-  notificationId?: string;
 }
 
 export interface ExtractedMedicationData {

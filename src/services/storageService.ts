@@ -1,13 +1,12 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Medication } from '../types/medication';
 
-const STORAGE_KEY = 'medications';
+const KEY = 'medications';
 
-export async function loadMedications(): Promise<Medication[]> {
-  const json = await AsyncStorage.getItem(STORAGE_KEY);
+export function loadMedications(): Medication[] {
+  const json = localStorage.getItem(KEY);
   return json ? JSON.parse(json) : [];
 }
 
-export async function saveMedications(medications: Medication[]): Promise<void> {
-  await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(medications));
+export function saveMedications(medications: Medication[]): void {
+  localStorage.setItem(KEY, JSON.stringify(medications));
 }

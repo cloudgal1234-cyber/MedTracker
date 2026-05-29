@@ -1,8 +1,7 @@
 export function getDaysUntilExpiry(expiryDateStr: string): number {
   const expiry = new Date(expiryDateStr);
   const today = new Date();
-  const diff = expiry.getTime() - today.getTime();
-  return Math.ceil(diff / (1000 * 60 * 60 * 24));
+  return Math.ceil((expiry.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 }
 
 export function getExpiryStatus(days: number): 'safe' | 'warning' | 'danger' | 'expired' {

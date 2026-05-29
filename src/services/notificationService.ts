@@ -1,40 +1,25 @@
-import * as Notifications from 'expo-notifications';
 import { Medication } from '../types/medication';
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  }),
-});
-
-export async function requestNotificationPermission(): Promise<boolean> {
-  const { status } = await Notifications.requestPermissionsAsync();
-  return status === 'granted';
+export async function requestPermission(): Promise<boolean> {
+  if (!('Notification' in window)) return false;
+  const result = await Notification.requestPermission();
+  return result === 'granted';
 }
 
-export async function scheduleExpiryNotification(
-  medication: Medication
-): Promise<string | null> {
+export function scheduleNotification(medication: Medication): void {
+  if (!('Notification' in window)) return;
+
   const expiryDate = new Date(medication.expiryDate);
   const notifyDate = new Date(expiryDate);
   notifyDate.setDate(notifyDate.getDate() - medication.reminderDaysBefore);
 
-  if (notifyDate <= new Date()) return null;
+  const msUntilNotify = notifyDate.getTime() - Date.now();
+  if (msUntilNotify <= 0) return;
 
-  const id = await Notifications.scheduleNotificationAsync({
-    content: {
-      title: `⚠️ ${medication.name} עומדת לפוג`,
+  setTimeout(() => {
+    new Notification(`⚠️ ${medication.name} עומדת לפוג`, {
       body: `תאריך תפוגה: ${expiryDate.toLocaleDateString('he-IL')}. זכור לקנות חדש!`,
-      data: { medicationId: medication.id },
-    },
-    trigger: { date: notifyDate },
-  });
-
-  return id;
-}
-
-export async function cancelNotification(notificationId: string): Promise<void> {
-  await Notifications.cancelScheduledNotificationAsync(notificationId);
+      icon: '/MedTracker/icon.png',
+    });
+  }, msUntilNotify);
 }
