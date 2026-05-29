@@ -71,14 +71,24 @@ export function AddMedication() {
 
       <div style={{ padding: 20 }}>
         {/* API Key */}
-        <label style={labelStyle}>🔑 מפתח Claude API</label>
+        <label style={labelStyle}>🔑 מפתח Gemini API</label>
         <input
           type="password"
-          placeholder="sk-ant-..."
+          placeholder="AIza..."
           value={localApiKey}
           onChange={(e) => setLocalApiKey(e.target.value)}
           style={inputStyle}
         />
+        {!localApiKey && (
+          <a
+            href="https://aistudio.google.com/app/apikey"
+            target="_blank"
+            rel="noreferrer"
+            style={{ fontSize: 13, color: '#2196F3', marginTop: 4, display: 'block' }}
+          >
+            📎 קבל מפתח חינם מ-Google AI Studio
+          </a>
+        )}
 
         {/* Camera / Gallery */}
         <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>

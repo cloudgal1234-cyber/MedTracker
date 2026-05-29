@@ -1,6 +1,6 @@
 import { ExtractedMedicationData } from '../types/medication';
 
-const CLAUDE_API_URL = 'https://api.anthropic.com/v1/messages';
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
 
 export async function extractMedicationData(
   imageBase64: string,
@@ -17,33 +17,31 @@ export async function extractMedicationData(
 אם שדה לא נמצא, השתמש ב-"לא זוהה".
 לתאריך תפוגה: חפש EXP / תפוגה / Use By / Best Before.`;
 
-  const response = await fetch(CLAUDE_API_URL, {
+  const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true',
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 512,
-      messages: [{
-        role: 'user',
-        content: [
+      contents: [{
+        parts: [
           {
-            type: 'image',
-            source: { type: 'base64', media_type: 'image/jpeg', data: imageBase64 },
+            inline_data: {
+              mime_type: 'image/jpeg',
+              data: imageBase64,
+            },
           },
-          { type: 'text', text: prompt },
+          { text: prompt },
         ],
       }],
+      generationConfig: {
+        temperature: 0.1,
+        maxOutputTokens: 512,
+      },
     }),
   });
 
   if (!response.ok) throw new Error(`שגיאת API: ${response.status}`);
 
   const data = await response.json();
-  const text = data.content[0].text.trim().replace(/```json\n?|\n?```/g, '');
+  const text = data.candidates[0].content.parts[0].text.trim().replace(/```json\n?|\n?```/g, '');
   return JSON.parse(text) as ExtractedMedicationData;
 }
